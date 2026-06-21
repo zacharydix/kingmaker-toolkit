@@ -1,0 +1,155 @@
+const selectedTokens = canvas.tokens.controlled;
+
+if (!selectedTokens.length) {
+  return ui.notifications.warn("Please select the character token making the check.");
+}
+
+const token = selectedTokens.find(t => !t.actor?.getFlag("world", "isSettlement"));
+
+if (!token) {
+  return ui.notifications.warn("Please select a non-settlement token to make the check.");
+}
+
+const actor = token.actor;
+const kingdom = game.actors.getName("Kingdom");
+
+if (!kingdom) {
+  return ui.notifications.error('No actor named "Kingdom" found.');
+}
+
+const DC_BY_LEVEL = {
+  0: 14, 1: 15, 2: 16, 3: 18, 4: 19,
+  5: 20, 6: 22, 7: 23, 8: 24, 9: 26,
+  10: 27, 11: 28, 12: 30, 13: 31, 14: 32,
+  15: 34, 16: 35, 17: 36, 18: 38, 19: 39,
+  20: 40, 21: 42, 22: 44, 23: 46, 24: 48,
+  25: 50
+};
+
+const kingdomLevel = Number(kingdom.getFlag("world", "kingdomLevel"));
+
+if (!Number.isInteger(kingdomLevel)) {
+  return ui.notifications.error("Kingdom Level has not been set.");
+}
+
+const dc = DC_BY_LEVEL[kingdomLevel];
+
+if (!dc) {
+  return ui.notifications.error(`Invalid Kingdom Level: ${kingdomLevel}`);
+}
+
+const skills = {
+  crafting: "Crafting",
+  diplomacy: "Diplomacy",
+  society: "Society"
+};
+
+const options = Object.entries(skills)
+  .map(([slug, label]) => `<option value="${slug}">${label}</option>`)
+  .join("");
+
+new Dialog({
+  title: "Develop a Settlement",
+  content: `
+    <form>
+      <div class="form-group">
+        <label>Skill</label>
+        <select id="skill">${options}</select>
+      </div>
+
+      <p>
+        <strong>Kingdom Level:</strong> ${kingdomLevel}<br>
+        <strong>DC:</strong> ${dc}
+      </p>
+
+      <p>
+        <em>After a success, select the settlement token that should receive Development before pressing the Development button.</em>
+      </p>
+    </form>
+  `,
+  buttons: {
+    roll: {
+      label: "Roll",
+      callback: async (html) => {
+        const skillSlug = html.find("#skill").val();
+        const skill = actor.skills[skillSlug];
+
+        if (!skill) {
+          return ui.notifications.error(`${skills[skillSlug]} not found on this actor.`);
+        }
+
+        const roll = await skill.roll({
+          dc: { value: dc },
+          createMessage: true
+        });
+
+        const total = roll.total;
+
+        let degree;
+        if (total >= dc + 10) degree = 3;
+        else if (total >= dc) degree = 2;
+        else if (total <= dc - 10) degree = 0;
+        else degree = 1;
+
+        const dieResult = roll.dice?.[0]?.total;
+
+        if (dieResult === 20 && degree < 3) degree++;
+        if (dieResult === 1 && degree > 0) degree--;
+
+        let outcome = "";
+        let result = "";
+
+        switch (degree) {
+          case 3:
+            outcome = "Critical Success";
+            result = `
+              That settlement gains 2 Development.<br>
+              <button class="settlement-adjust-development" data-amount="2">+2 Development</button>
+            `;
+            break;
+
+          case 2:
+            outcome = "Success";
+            result = `
+              That settlement gains 1 Development.<br>
+              <button class="settlement-adjust-development" data-amount="1">+1 Development</button>
+            `;
+            break;
+
+          case 1:
+            outcome = "Failure";
+            result = `
+              You gain 1 Unrest.<br>
+              <button class="kingdom-adjust-unrest" data-amount="1">+1 Unrest</button>
+            `;
+            break;
+
+          case 0:
+            outcome = "Critical Failure";
+            result = `
+              You gain 2 Unrest.<br>
+              <button class="kingdom-adjust-unrest" data-amount="2">+2 Unrest</button>
+            `;
+            break;
+        }
+
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          content: `
+            <div style="line-height:1.25;">
+              <strong>Develop a Settlement</strong><br>
+              <small>${skills[skillSlug]} vs DC ${dc} · Kingdom Level ${kingdomLevel}</small>
+              <hr style="margin:4px 0;">
+              <strong>${outcome}</strong><br>
+              ${result}
+            </div>
+          `
+        });
+      }
+    },
+    cancel: {
+      label: "Cancel"
+    }
+  },
+  default: "roll"
+}).render(true);
