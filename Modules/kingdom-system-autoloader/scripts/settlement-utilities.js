@@ -33,6 +33,48 @@ if (globalThis.settlementUtilitiesLoaded) {
     Metropolis: null
   };
 
+  const FOCI_SHORT_DESCRIPTIONS = {
+    "Palace": "Reduce Unrest by 1 each Kingdom Turn.",
+    "Public Forum": "Gain half Unrest from Events.",
+    "Monument": "Reroll one critical failure per Kingdom Turn.",
+    "Walls": "Armies begin battles fortified.",
+    "Castle": "Armies begin battles fortified; stronger if the settlement also has Walls.",
+    "Gold Mine": "Monthly gold equal to half the settlement level.",
+    "Mint": "Monthly gold equal to the settlement level.",
+    "Marvelous Marketplace": "Sell magical items at full value instead of half.",
+    "Bazaar": "Sell non-magical items at full value instead of half.",
+    "Alchemical Lab": "+3 to Craft alchemical items.",
+    "Magical Crafter": "+3 to transfer runes and Craft magical equipment.",
+    "Master Blacksmith": "+3 to Craft magical weapons and armor.",
+    "Potion Seller": "+3 to Craft magical potions.",
+    "Library": "+3 to research-related rolls.",
+    "University": "+3 to all Intelligence- or Wisdom-based skill checks.",
+    "Scenic Retreat": "+3 to Influence checks with NPCs in the settlement.",
+    "Arcanum Guild": "Arcana, Occultism — +3 to Earn Income, Increased Max Task Level",
+    "Artisan's Guild": "Crafting — +3 to Earn Income, Increased Max Task Level",
+    "Caravansarai": "Deception, Diplomacy — +3 to Earn Income, Increased Max Task Level",
+    "Casino": "Deception, Thievery — +3 to Earn Income, Increased Max Task Level",
+    "Circus": "Acrobatics, Performance — +3 to Earn Income, Increased Max Task Level",
+    "Druids' Grove": "Survival, Nature — +3 to Earn Income, Increased Max Task Level",
+    "Exorcists Extraordinaire": "Intimidation, Occultism — +3 to Earn Income, Increased Max Task Level",
+    "Farming Initiative": "Athletics, Nature — +3 to Earn Income, Increased Max Task Level",
+    "Famous Tavern": "Performance, Lore — +3 to Earn Income, Increased Max Task Level",
+    "Healing Houses": "Medicine, Religion — +3 to Earn Income, Increased Max Task Level",
+    "Hunter's Lodge": "Stealth, Survival — +3 to Earn Income, Increased Max Task Level",
+    "Museum of the Ancient Arcane": "Acrobatics, Arcana — +3 to Earn Income, Increased Max Task Level",
+    "Printing Press": "Diplomacy, Society — +3 to Earn Income, Increased Max Task Level",
+    "Temple District": "Religion, Society — +3 to Earn Income, Increased Max Task Level",
+    "Thieves' Guild": "Stealth, Thievery — +3 to Earn Income, Increased Max Task Level",
+    "Training Ground": "Athletics, Intimidation — +3 to Earn Income, Increased Max Task Level",
+    "Training Hospital": "Crafting, Medicine — +3 to Earn Income, Increased Max Task Level"
+  };
+
+  function getFocusDisplayText(focus) {
+    const description = FOCI_SHORT_DESCRIPTIONS[focus];
+    if (!description) return focus;
+    return `${focus} <em>(${description})</em>`;
+  }
+
   function getUpgradeText(type, development) {
     const required = DEVELOPMENT_TIERS[type];
 
@@ -97,7 +139,7 @@ if (globalThis.settlementUtilitiesLoaded) {
     const foci = actor.getFlag("world", "foci") ?? [];
 
     const fociHtml = foci.length
-      ? `<ul style="margin:4px 0 0 16px; padding:0;">${foci.map(focus => `<li>${focus}</li>`).join("")}</ul>`
+      ? `<ul style="margin:4px 0 0 16px; padding:0;">${foci.map(focus => `<li>${getFocusDisplayText(focus)}</li>`).join("")}</ul>`
       : `<em>None</em>`;
 
     const tooltip = createSettlementTooltip();
