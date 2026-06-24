@@ -1,0 +1,18 @@
+{
+  "id": "kingmaker-toolkit",
+  "title": "Kingmaker Toolkit",
+  "description": "A collection of utilities for the Pathfinder 2e Kingmaker campaign.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14.364"
+  },
+  "authors": [
+    {
+      "name": "Zachary Dix"
+    }
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ]
+}
