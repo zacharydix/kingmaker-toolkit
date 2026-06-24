@@ -21,42 +21,6 @@ const DEVELOPMENT_TIERS = {
   Metropolis: null
 };
 
-const FOCI = [
-  "Alchemical Lab",
-  "Arcanum Guild",
-  "Artisan’s Guild",
-  "Bazaar",
-  "Caravansarai",
-  "Casino",
-  "Castle",
-  "Circus",
-  "Druids’ Grove",
-  "Exorcists Extraordinaire",
-  "Farming Initiative",
-  "Famous Tavern",
-  "Gold Mine",
-  "Healing Houses",
-  "Hunter’s Lodge",
-  "Library",
-  "Magical Crafter",
-  "Marvelous Marketplace",
-  "Master Blacksmith",
-  "Mint",
-  "Monument",
-  "Museum of the Ancient Arcane",
-  "Palace",
-  "Potion Seller",
-  "Printing Press",
-  "Public Forum",
-  "Scenic Retreat",
-  "Temple District",
-  "Thieves’ Guild",
-  "Training Ground",
-  "Training Hospital",
-  "University",
-  "Walls"
-];
-
 const SETTLEMENT_RANK = {
   Village: 0,
   Town: 1,
@@ -83,11 +47,6 @@ const FOCUS_REQUIREMENTS = {
   "Palace": "Metropolis",
   "University": "Metropolis"
 };
-
-const REPEATABLE_FOCI = [
-  "Castle",
-  "Walls"
-];
 
 const SETTLEMENT_CONFIG = {
   Village: {
@@ -125,27 +84,13 @@ function makeTypeOptions(currentType) {
 }
 
 function getFocusLabel(focus) {
-  const parts = [];
-
-  if (FOCUS_REQUIREMENTS[focus]) {
-    parts.push(FOCUS_REQUIREMENTS[focus]);
-  }
-
-  if (REPEATABLE_FOCI.includes(focus)) {
-    parts.push("Repeatable");
-  }
-
-  return parts.length
-    ? `${focus} (${parts.join(", ")})`
-    : focus;
+  return FocusService.getLabel(focus);
 }
 
 function makeFocusOptions(currentFocus) {
   const empty = `<option value="" ${!currentFocus ? "selected" : ""}>Empty</option>`;
 
-  const options = FOCI
-    .slice()
-    .sort((a, b) => a.localeCompare(b))
+  const options = FocusService.getSortedNames()
     .map(focus => `
       <option
         value="${focus}"
@@ -184,7 +129,7 @@ function getSettlementActors() {
 }
 
 function getFocusConflict(focus, currentActor) {
-  if (!focus || REPEATABLE_FOCI.includes(focus)) return null;
+  if (!focus || FocusService.isRepeatable(focus)) return null;
 
   return getSettlementActors().find(actor => {
     if (actor.id === currentActor.id) return false;
@@ -195,10 +140,10 @@ function getFocusConflict(focus, currentActor) {
 }
 
 function focusMeetsRequirement(focus, settlementType) {
-  const requirement = FOCUS_REQUIREMENTS[focus];
-  if (!requirement) return true;
-
-  return SETTLEMENT_RANK[settlementType] >= SETTLEMENT_RANK[requirement];
+  return FocusService.meetsSettlementRequirement(
+    focus,
+    settlementType
+  );
 }
 
 if (!initialized) {
@@ -324,7 +269,7 @@ if (isGM) {
 
         if (!focusMeetsRequirement(focus, newType)) {
           return ui.notifications.error(
-            `${focus} requires a ${FOCUS_REQUIREMENTS[focus]} or larger settlement.`
+            `${focus} requires a ${FocusService.getMinimumSettlementType(focus)} or larger settlement.`
           );
         }
       }
