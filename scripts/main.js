@@ -5,6 +5,8 @@ import { SettlementService } from './services/settlement-service.js';
 import { FocusService } from './services/focus-service.js';
 import { openSettlementDashboard } from './apps/settlement-dashboard.js';
 import { openDowntimeDashboard } from './apps/downtime-dashboard.js';
+import { openKingdomDashboard } from './apps/kingdom-dashboard.js';
+import { registerKingdomListeners } from './listeners/kingdom-listeners.js';
 
 Hooks.once('init', () => {
   console.log('Kingmaker Toolkit | Initializing');
@@ -19,6 +21,7 @@ Hooks.once('ready', () => {
     apps: {
       openSettlementDashboard,
       openDowntimeDashboard,
+      openKingdomDashboard,
     },
 
     services: {
@@ -30,4 +33,6 @@ Hooks.once('ready', () => {
     data: {},
     utils: {},
   };
+
+  registerKingdomListeners();
 });
