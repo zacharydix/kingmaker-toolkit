@@ -1,5 +1,14 @@
 // scripts/main.js
 
+import { KINGDOM_DC_BY_LEVEL } from "./data/kingdom-data.js";
+
+import {
+  SETTLEMENT_DEVELOPMENT_REQUIREMENTS,
+  SETTLEMENT_TYPES
+} from "./data/settlement-data.js";
+
+import { EARN_INCOME_FOCI } from "./data/earn-income-data.js";
+
 Hooks.once("init", () => {
   console.log("Kingmaker Toolkit | Initializing");
 });
@@ -14,15 +23,4 @@ Hooks.once("ready", () => {
     data: {},
     utils: {}
   };
-
-  console.log("Kingmaker Toolkit | API registered:", game.kingmakerToolkit);
-});
-
-import { KINGDOM_DC_BY_LEVEL } from "./data/kingdom-data.js";
-
-Hooks.once("ready", () => {
-  console.log(
-    "Kingmaker Toolkit | Level 8 DC:",
-    KINGDOM_DC_BY_LEVEL[8]
-  );
 });
