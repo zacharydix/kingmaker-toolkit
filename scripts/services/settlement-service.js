@@ -1,6 +1,10 @@
 // scripts/services/settlement-service.js
 
-import { SETTLEMENT_DEVELOPMENT_REQUIREMENTS, SETTLEMENT_TYPES } from '../data/settlement-data.js';
+import {
+  SETTLEMENT_CONFIG,
+  SETTLEMENT_DEVELOPMENT_REQUIREMENTS,
+  SETTLEMENT_TYPES,
+} from '../data/settlement-data.js';
 
 export class SettlementService {
   static getAllSettlements() {
@@ -43,5 +47,9 @@ export class SettlementService {
     if (index === -1) return null;
 
     return types[index + 1] ?? null;
+  }
+
+  static getConfig() {
+    return SETTLEMENT_CONFIG;
   }
 }
