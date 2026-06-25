@@ -1,0 +1,49 @@
+export function renderDowntimeDashboard(data) {
+  if (!data.actorName) {
+    return [
+      `<div class="downtime-dashboard">`,
+      `<h2>Downtime Dashboard</h2>`,
+      `<p>Please select a character token or assign yourself a character.</p>`,
+      `</div>`,
+    ].join('');
+  }
+
+  return [
+    `<div class="downtime-dashboard">`,
+    `<h2>Downtime Dashboard</h2>`,
+    `<p><strong>Character:</strong> ${data.actorName}</p>`,
+    `<hr>`,
+    `<h3>Available Activities</h3>`,
+    `<details open>`,
+    `<summary><strong>Earn Income</strong></summary>`,
+    `<form class="earn-income-form">`,
+    `<div class="form-group">`,
+    `<label>Skill</label>`,
+    `<select name="skillSlug">${data.skillOptions}</select>`,
+    `</div>`,
+    `<div class="form-group">`,
+    `<label>Settlement</label>`,
+    `<select name="settlementId">${data.settlementOptions}</select>`,
+    `</div>`,
+    `<div class="form-group">`,
+    `<label>Task Name</label>`,
+    `<input type="text" name="taskName" placeholder="Scribe scrolls, perform at tavern, repair wagons..." />`,
+    `</div>`,
+    `<div class="form-group">`,
+    `<label>Task Level</label>`,
+    `<input type="number" name="taskLevel" value="${data.defaultTaskLevel}" min="0" max="20" />`,
+    `</div>`,
+    `<div class="form-group">`,
+    `<label>DC</label>`,
+    `<input type="number" name="dc" value="${data.defaultDc}" min="0" />`,
+    `</div>`,
+    `<p class="focus-preview"><em>Select a settlement and skill to preview matching Foci.</em></p>`,
+    `<button type="submit">Roll Earn Income</button>`,
+    `</form>`,
+    `</details>`,
+    `<hr>`,
+    `<h3>Coming Soon</h3>`,
+    `<button disabled>Craft</button>`,
+    `</div>`,
+  ].join('');
+}

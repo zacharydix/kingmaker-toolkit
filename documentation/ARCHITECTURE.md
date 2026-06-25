@@ -8,16 +8,18 @@ The architecture intentionally follows a layered approach:
 
 ```
 Apps / Listeners
-        ↓
-     Services
-        ↓
-     Renderers
-        ↓
-        DOM
+↓
+Services
+↓
+View Models
+↓
+Renderers
+↓
+DOM
 
 Services
-        ↓
-      Data
+↓
+Data
 ```
 
 ---
@@ -144,6 +146,49 @@ main.js
 ```
 
 Listeners should register once and react to UI events.
+
+---
+
+## Renderers
+
+Location:
+
+scripts/renderers/
+
+Renderers convert prepared view models into HTML strings.
+
+Renderers should:
+
+- Accept plain JavaScript objects.
+- Return HTML strings.
+- Avoid Foundry dependencies.
+- Avoid actor lookups.
+- Avoid service calls.
+- Avoid business logic.
+
+Apps and listeners prepare the data. Renderers display it.
+
+---
+
+## Styles
+
+Location:
+
+styles/kingmaker-toolkit.css
+
+Use CSS classes instead of inline styles whenever possible.
+
+Shared utility classes should use:
+
+km-\*
+
+Feature-specific classes should use:
+
+downtime-_
+kingdom-_
+settlement-\*
+
+Inline styles are acceptable only for dynamic values, such as tooltip positioning.
 
 ---
 

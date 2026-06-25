@@ -10,6 +10,7 @@ import {
   renderEarnIncomeTotalPreview,
   renderPendingEarnIncomeCard,
 } from '../renderers/downtime/earn-income-chat-renderer.js';
+import { renderDowntimeDashboard } from '../renderers/downtime/dashboard-renderer.js';
 
 export async function openDowntimeDashboard() {
   // Paste the full current macros/downtime-dashboard.js body here.
@@ -354,17 +355,13 @@ export async function openDowntimeDashboard() {
       const actor = this.actor;
 
       if (!actor) {
-        return $(`
-            <div style="padding: 12px;">
-            <h2>Downtime Dashboard</h2>
-            <p>Please select a character token or assign yourself a character.</p>
-            </div>
-        `);
+        return $(renderDowntimeDashboard({ actorName: null }));
       }
 
       const skills = DowntimeSystem.getTrainedSkills(actor);
       const settlements = SettlementService.getAllSettlements();
       const selectedSkill = skills[0];
+
       const defaultTaskLevel = DowntimeSystem.getDefaultTaskLevel(
         actor,
         null,
@@ -384,56 +381,15 @@ export async function openDowntimeDashboard() {
         ...settlements.map((s) => `<option value="${s.id}">${s.name}</option>`),
       ].join('');
 
-      return $(`
-        <div style="padding: 12px;">
-            <h2>Downtime Dashboard</h2>
-            <p><strong>Character:</strong> ${actor.name}</p>
-
-            <hr>
-
-            <h3>Available Activities</h3>
-
-            <details open>
-            <summary><strong>Earn Income</strong></summary>
-
-            <form class="earn-income-form" style="margin-top: 8px;">
-                <div class="form-group">
-                <label>Skill</label>
-                <select name="skillSlug">${skillOptions}</select>
-                </div>
-
-                <div class="form-group">
-                <label>Settlement</label>
-                <select name="settlementId">${settlementOptions}</select>
-                </div>
-
-                <div class="form-group">
-                <label>Task Name</label>
-                <input type="text" name="taskName" placeholder="Scribe scrolls, perform at tavern, repair wagons..." />
-                </div>
-
-                <div class="form-group">
-                <label>Task Level</label>
-                <input type="number" name="taskLevel" value="${defaultTaskLevel}" min="0" max="20" />
-                </div>
-
-                <div class="form-group">
-                <label>DC</label>
-                <input type="number" name="dc" value="${DowntimeSystem.TASK_DCS[defaultTaskLevel]}" min="0" />
-                </div>
-
-                <p class="focus-preview"><em>Select a settlement and skill to preview matching Foci.</em></p>
-
-                <button type="submit">Roll Earn Income</button>
-            </form>
-            </details>
-
-            <hr>
-
-            <h3>Coming Soon</h3>
-            <button disabled>Craft</button>
-        </div>
-        `);
+      return $(
+        renderDowntimeDashboard({
+          actorName: actor.name,
+          skillOptions,
+          settlementOptions,
+          defaultTaskLevel,
+          defaultDc: DowntimeSystem.TASK_DCS[defaultTaskLevel],
+        })
+      );
     }
 
     activateListeners(html) {
