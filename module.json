@@ -12,7 +12,6 @@
       "name": "Zachary Dix"
     }
   ],
-  "esmodules": [
-    "scripts/main.js"
-  ]
+  "esmodules": ["scripts/main.js"],
+  "styles": ["styles/kingmaker-toolkit.css"]
 }

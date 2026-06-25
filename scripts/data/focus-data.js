@@ -42,6 +42,9 @@ export const FOCI = {
     name: 'Alchemical Lab',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: 'Craft alchemical items at 3 levels higher.',
+    benefit:
+      '+3 circumstance bonus to Craft alchemical items. Craft as if 3 levels higher when reducing the cost of alchemical items.',
     earnIncomeSkills: [],
   },
 
@@ -50,6 +53,8 @@ export const FOCI = {
     name: 'Arcanum Guild',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Arcana, Occultism)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['arcana', 'occultism'],
   },
 
@@ -58,6 +63,8 @@ export const FOCI = {
     name: "Artisan's Guild",
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Crafting)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['crafting'],
   },
 
@@ -66,6 +73,9 @@ export const FOCI = {
     name: 'Bazaar',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: 'Sell non-magical items at full value.',
+    benefit:
+      'After one month of downtime, sell non-magical items for their full value instead of half.',
     earnIncomeSkills: [],
   },
 
@@ -74,6 +84,8 @@ export const FOCI = {
     name: 'Caravansarai',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Deception, Diplomacy)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['deception', 'diplomacy'],
   },
 
@@ -82,6 +94,8 @@ export const FOCI = {
     name: 'Casino',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Deception, Thievery)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['deception', 'thievery'],
   },
 
@@ -90,6 +104,9 @@ export const FOCI = {
     name: 'Castle',
     minimumSettlementType: 'Town',
     repeatable: true,
+    quickDescription: 'Armies begin battles fortified.',
+    benefit:
+      'Armies begin battles fortified. If this settlement also has Walls, the first damage each army would take in battle is negated. Multiple settlements can choose this Focus.',
     earnIncomeSkills: [],
   },
 
@@ -98,6 +115,8 @@ export const FOCI = {
     name: 'Circus',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Acrobatics, Performance)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['acrobatics', 'performance'],
   },
 
@@ -106,6 +125,8 @@ export const FOCI = {
     name: "Druids' Grove",
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Survival, Nature)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['survival', 'nature'],
   },
 
@@ -114,6 +135,8 @@ export const FOCI = {
     name: 'Exorcists Extraordinaire',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Intimidation, Occultism)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['intimidation', 'occultism'],
   },
 
@@ -122,6 +145,8 @@ export const FOCI = {
     name: 'Farming Initiative',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Athletics, Nature)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['athletics', 'nature'],
   },
 
@@ -130,6 +155,8 @@ export const FOCI = {
     name: 'Famous Tavern',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Performance, Lore)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['performance', 'lore'],
   },
 
@@ -138,6 +165,8 @@ export const FOCI = {
     name: 'Gold Mine',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: 'Monthly passive income.',
+    benefit: 'Each month, each PC receives gold equal to half the settlement level.',
     earnIncomeSkills: [],
   },
 
@@ -146,6 +175,8 @@ export const FOCI = {
     name: 'Healing Houses',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Medicine, Religion)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['medicine', 'religion'],
   },
 
@@ -154,6 +185,8 @@ export const FOCI = {
     name: "Hunter's Lodge",
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Stealth, Survival)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['stealth', 'survival'],
   },
 
@@ -162,6 +195,8 @@ export const FOCI = {
     name: 'Library',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: '+3 to research.',
+    benefit: '+3 circumstance bonus to research-related skill checks while in this settlement.',
     earnIncomeSkills: [],
   },
 
@@ -170,6 +205,9 @@ export const FOCI = {
     name: 'Magical Crafter',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: 'Craft magical equipment at 3 levels higher.',
+    benefit:
+      '+3 to transfer runes and Craft magical equipment. Craft as if 3 levels higher when reducing the cost of magical equipment.',
     earnIncomeSkills: [],
   },
 
@@ -178,6 +216,9 @@ export const FOCI = {
     name: 'Marvelous Marketplace',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: 'Sell magical items at full value.',
+    benefit:
+      'After one month of downtime, sell magical items for their full value instead of half.',
     earnIncomeSkills: [],
   },
 
@@ -186,6 +227,9 @@ export const FOCI = {
     name: 'Master Blacksmith',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: 'Craft magical weapons and armor at 3 levels higher.',
+    benefit:
+      '+3 circumstance bonus to Craft magical weapons and armor. Craft as if 3 levels higher when reducing the cost of magical weapons and armor.',
     earnIncomeSkills: [],
   },
 
@@ -194,6 +238,8 @@ export const FOCI = {
     name: 'Mint',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: 'Monthly passive income.',
+    benefit: 'Each month, each PC receives gold equal to the settlement level.',
     earnIncomeSkills: [],
   },
 
@@ -202,6 +248,8 @@ export const FOCI = {
     name: 'Monument',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: 'Reroll one critical failure.',
+    benefit: 'Once per Kingdom Turn, reroll one critical failure. You must use the new result.',
     earnIncomeSkills: [],
   },
 
@@ -210,6 +258,8 @@ export const FOCI = {
     name: 'Museum of the Ancient Arcane',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Acrobatics, Arcana)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['acrobatics', 'arcana'],
   },
 
@@ -218,6 +268,8 @@ export const FOCI = {
     name: 'Palace',
     minimumSettlementType: 'Metropolis',
     repeatable: false,
+    quickDescription: 'Reduce Unrest each Kingdom Turn.',
+    benefit: 'At the beginning of each Kingdom Turn, automatically reduce Unrest by 1.',
     earnIncomeSkills: [],
   },
 
@@ -226,6 +278,9 @@ export const FOCI = {
     name: 'Potion Seller',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: 'Craft magical potions at 3 levels higher.',
+    benefit:
+      '+3 circumstance bonus to Craft magical potions. Craft as if 3 levels higher when reducing the cost of magical potions.',
     earnIncomeSkills: [],
   },
 
@@ -234,6 +289,8 @@ export const FOCI = {
     name: 'Printing Press',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Diplomacy, Society)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['diplomacy', 'society'],
   },
 
@@ -242,6 +299,9 @@ export const FOCI = {
     name: 'Public Forum',
     minimumSettlementType: 'City',
     repeatable: false,
+    quickDescription: 'Gain half Unrest from Events.',
+    benefit:
+      'Once per Kingdom Turn, when you would gain Unrest from an Event, gain half as much Unrest instead.',
     earnIncomeSkills: [],
   },
 
@@ -250,6 +310,8 @@ export const FOCI = {
     name: 'Scenic Retreat',
     minimumSettlementType: 'Town',
     repeatable: false,
+    quickDescription: '+3 to Influence checks.',
+    benefit: '+3 circumstance bonus to checks made to gain Influence with NPCs at this settlement.',
     earnIncomeSkills: [],
   },
 
@@ -258,6 +320,8 @@ export const FOCI = {
     name: 'Temple District',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Religion, Society)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['religion', 'society'],
   },
 
@@ -266,6 +330,8 @@ export const FOCI = {
     name: "Thieves' Guild",
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Stealth, Thievery)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['stealth', 'thievery'],
   },
 
@@ -274,6 +340,8 @@ export const FOCI = {
     name: 'Training Ground',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Athletics, Intimidation)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['athletics', 'intimidation'],
   },
 
@@ -282,6 +350,8 @@ export const FOCI = {
     name: 'Training Hospital',
     minimumSettlementType: 'Village',
     repeatable: false,
+    quickDescription: 'Earn Income (Crafting, Medicine)',
+    benefit: 'Jobs up to kingdom level. +3 circumstance bonus.',
     earnIncomeSkills: ['crafting', 'medicine'],
   },
 
@@ -290,6 +360,9 @@ export const FOCI = {
     name: 'University',
     minimumSettlementType: 'Metropolis',
     repeatable: false,
+    quickDescription: '+3 to Intelligence- or Wisdom-based checks.',
+    benefit:
+      '+3 circumstance bonus to all Intelligence- or Wisdom-based skill checks while in this settlement.',
     earnIncomeSkills: [],
   },
 
@@ -298,6 +371,9 @@ export const FOCI = {
     name: 'Walls',
     minimumSettlementType: 'Village',
     repeatable: true,
+    quickDescription: 'Armies begin battles fortified.',
+    benefit:
+      'If a battle occurs in this hex, your armies begin with the fortified condition. Multiple settlements can choose this Focus.',
     earnIncomeSkills: [],
   },
 };

@@ -7,12 +7,56 @@ The toolkit should be easy to extend without duplicating rules or business logic
 The architecture intentionally follows a layered approach:
 
 ```
-UI
-↓
+Apps / Listeners
+        ↓
+     Services
+        ↓
+     Renderers
+        ↓
+        DOM
+
 Services
-↓
-Data
+        ↓
+      Data
 ```
+
+---
+
+## Responsibilities
+
+Apps
+
+- Create Applications
+- Handle user interaction
+- Call services
+- Call renderers
+
+Listeners
+
+- Register hooks
+- Gather data
+- Call services
+- Call renderers
+
+Services
+
+- Business logic
+- Validation
+- Actor lookups
+- Calculations
+
+Renderers
+
+- Convert plain data into HTML
+- No Foundry dependencies
+- No actor lookups
+- No business logic
+
+Data
+
+- Constants
+- Tables
+- Metadata
 
 ---
 

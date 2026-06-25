@@ -32,6 +32,10 @@ export class SettlementService {
     return this.getDevelopment(actor) >= requirement;
   }
 
+  static isSettlement(actor) {
+    return actor?.getFlag('world', 'isSettlement') === true;
+  }
+
   static getFoci(actor) {
     return actor?.getFlag('world', 'foci') ?? [];
   }

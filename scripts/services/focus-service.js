@@ -66,6 +66,10 @@ export class FocusService {
     return this.getNames().sort((a, b) => a.localeCompare(b));
   }
 
+  static getQuickDescription(id) {
+    return this.getById(id)?.quickDescription ?? '';
+  }
+
   static normalizeName(name) {
     return String(name ?? '')
       .replace(/’/g, "'")
