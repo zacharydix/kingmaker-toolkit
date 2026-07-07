@@ -41,9 +41,8 @@ export class KingdomEventService {
       const table = game.tables.getName(KINGDOM_EVENT_CONFIG.tableName);
 
       if (!table) {
-        return ui.notifications.error(
-          `Could not find roll table: ${KINGDOM_EVENT_CONFIG.tableName}`
-        );
+        ui.notifications.error(`Could not find roll table: ${KINGDOM_EVENT_CONFIG.tableName}`);
+        return result;
       }
 
       await table.draw();
