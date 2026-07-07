@@ -2,6 +2,7 @@
 
 import { KingdomService } from '../services/kingdom-service.js';
 import { SettlementService } from '../services/settlement-service.js';
+import { KingdomEventService } from '../services/kingdom-event-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -610,6 +611,11 @@ export async function openKingdomDashboard() {
 
       html.find('.kingdom-app-run-macro').on('click', async (event) => {
         const macroName = event.currentTarget.dataset.macroName;
+
+        if (macroName === 'Kingdom Event') {
+          return KingdomEventService.rollKingdomEvent();
+        }
+
         const macro = game.macros.getName(macroName);
 
         if (!macro) {
