@@ -44,7 +44,7 @@ export class DevelopSettlementService {
           callback: async (html) => {
             const settlementId = html.find('#develop-settlement-id').val();
             const skill = html.find('#develop-settlement-skill').val();
-            const settlement = game.actors.get(settlementId);
+            const settlement = SettlementService.getSettlementById(settlementId);
 
             await this.roll({ kingdom, actor, settlement, skill, dc });
           },
@@ -56,8 +56,7 @@ export class DevelopSettlementService {
   }
 
   static getSettlementOptions() {
-    return game.actors
-      .filter((actor) => actor.getFlag('world', 'isSettlement'))
+    return SettlementService.getAllSettlements()
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((settlement) => {
         const type = settlement.getFlag('world', 'settlementType') ?? 'Settlement';

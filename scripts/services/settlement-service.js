@@ -56,4 +56,9 @@ export class SettlementService {
   static getConfig() {
     return SETTLEMENT_CONFIG;
   }
+
+  static getSettlementById(id) {
+    const actor = game.actors.get(id);
+    return this.isSettlement(actor) ? actor : null;
+  }
 }
