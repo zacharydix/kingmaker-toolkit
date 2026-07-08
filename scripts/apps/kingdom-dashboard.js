@@ -6,6 +6,9 @@ import { KingdomEventService } from '../services/kingdom-event-service.js';
 import { ProvideSupportService } from '../services/kingdom-activities/provide-support-service.js';
 import { DealWithUnrestService } from '../services/kingdom-activities/deal-with-unrest-service.js';
 import { ClaimHexesService } from '../services/kingdom-activities/claim-hexes-service.js';
+import { BuildRoadsService } from '../services/kingdom-activities/build-roads-service.js';
+import { OutsourceReconnoiteringService } from '../services/kingdom-activities/outsource-reconnoitering-service.js';
+import { EstablishVillageService } from '../services/kingdom-activities/establish-village-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -620,6 +623,9 @@ export async function openKingdomDashboard() {
           'Provide Support': () => ProvideSupportService.start(),
           'Deal with Unrest': () => DealWithUnrestService.start(),
           'Claim Hexes': () => ClaimHexesService.start(),
+          'Build Roads': () => BuildRoadsService.start(),
+          'Outsource Reconnoitering': () => OutsourceReconnoiteringService.start(),
+          'Establish a Village': () => EstablishVillageService.start(),
         };
 
         const handler = activityHandlers[macroName];
