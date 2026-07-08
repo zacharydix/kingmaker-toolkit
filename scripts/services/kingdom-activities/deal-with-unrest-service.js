@@ -1,9 +1,9 @@
-import { PROVIDE_SUPPORT_DATA } from '../../data/kingdom-activities/provide-support-data.js';
+import { DEAL_WITH_UNREST_DATA } from '../../data/kingdom-activities/deal-with-unrest-data.js';
 import { KingdomService } from '../kingdom-service.js';
-import { ProvideSupportChatRenderer } from '../../renderers/kingdom/activities/provide-support-chat-renderer.js';
+import { DealWithUnrestChatRenderer } from '../../renderers/kingdom/activities/deal-with-unrest-chat-renderer.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 
-export class ProvideSupportService {
+export class DealWithUnrestService {
   static async start() {
     const kingdom = KingdomService.getKingdomActor();
 
@@ -11,25 +11,23 @@ export class ProvideSupportService {
       return ui.notifications.error('No actor named "Kingdom" found.');
     }
 
-    const kingdomDC = KingdomService.getDC();
+    const dc = KingdomService.getDC();
 
-    if (!Number.isFinite(kingdomDC)) {
+    if (!Number.isFinite(dc)) {
       return ui.notifications.error('Could not determine Kingdom DC.');
     }
 
-    const dc = kingdomDC + PROVIDE_SUPPORT_DATA.dcModifier;
-
-    const skillOptions = PROVIDE_SUPPORT_DATA.skills
+    const skillOptions = DEAL_WITH_UNREST_DATA.skills
       .map((skill) => `<option value="${skill}">${this.formatSkillLabel(skill)}</option>`)
       .join('');
 
     new Dialog({
-      title: 'Provide Support',
+      title: DEAL_WITH_UNREST_DATA.name,
       content: `
         <form>
           <div class="form-group">
             <label>Kingdom Skill</label>
-            <select id="provide-support-skill">${skillOptions}</select>
+            <select id="deal-with-unrest-skill">${skillOptions}</select>
           </div>
           <p><strong>DC:</strong> ${dc}</p>
         </form>
@@ -38,7 +36,7 @@ export class ProvideSupportService {
         roll: {
           label: 'Roll',
           callback: async (html) => {
-            const skill = html.find('#provide-support-skill').val();
+            const skill = html.find('#deal-with-unrest-skill').val();
             await this.roll({ kingdom, skill, dc });
           },
         },
@@ -53,9 +51,9 @@ export class ProvideSupportService {
   static async roll({ kingdom, skill, dc }) {
     return KingdomCheckService.roll({
       actor: kingdom,
-      title: PROVIDE_SUPPORT_DATA.name,
+      title: DEAL_WITH_UNREST_DATA.name,
       dc,
-      options: ['kingdom-activity:provide-support'],
+      options: ['kingdom-activity:deal-with-unrest'],
       callback: async ({ roll, total }) => {
         const degree = this.getDegreeOfSuccess(total, dc);
         const unrestDelta = this.getUnrestDelta(degree);
@@ -74,7 +72,7 @@ export class ProvideSupportService {
 
         await ChatMessage.create({
           speaker: ChatMessage.getSpeaker({ actor: kingdom }),
-          content: ProvideSupportChatRenderer.render(result),
+          content: DealWithUnrestChatRenderer.render(result),
         });
 
         return result;
@@ -90,13 +88,33 @@ export class ProvideSupportService {
   }
 
   static getUnrestDelta(degree) {
-    if (degree === 'failure') return 1;
-    if (degree === 'criticalFailure') return 2;
-    return 0;
+    switch (degree) {
+      case 'criticalSuccess':
+        return -3;
+      case 'success':
+        return -2;
+      case 'failure':
+        return -1;
+      case 'criticalFailure':
+        return 1;
+      default:
+        return 0;
+    }
   }
 
   static getOutcomeText(degree) {
-    return PROVIDE_SUPPORT_DATA.outcomes[degree];
+    switch (degree) {
+      case 'criticalSuccess':
+        return 'Reduce Unrest by 3.';
+      case 'success':
+        return 'Reduce Unrest by 2.';
+      case 'failure':
+        return 'Reduce Unrest by 1.';
+      case 'criticalFailure':
+        return 'Increase Unrest by 1.';
+      default:
+        return '';
+    }
   }
 
   static formatDegreeLabel(degree) {

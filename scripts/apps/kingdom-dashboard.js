@@ -4,6 +4,7 @@ import { KingdomService } from '../services/kingdom-service.js';
 import { SettlementService } from '../services/settlement-service.js';
 import { KingdomEventService } from '../services/kingdom-event-service.js';
 import { ProvideSupportService } from '../services/kingdom-activities/provide-support-service.js';
+import { DealWithUnrestService } from '../services/kingdom-activities/deal-with-unrest-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -616,6 +617,7 @@ export async function openKingdomDashboard() {
         const activityHandlers = {
           'Kingdom Event': () => KingdomEventService.rollKingdomEvent(),
           'Provide Support': () => ProvideSupportService.start(),
+          'Deal with Unrest': () => DealWithUnrestService.start(),
         };
 
         const handler = activityHandlers[macroName];
