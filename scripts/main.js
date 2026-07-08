@@ -8,6 +8,7 @@ import { openDowntimeDashboard } from './apps/downtime-dashboard.js';
 import { openKingdomDashboard } from './apps/kingdom-dashboard.js';
 import { registerKingdomListeners } from './listeners/kingdom-listeners.js';
 import { registerSettlementListeners } from './listeners/settlement-listeners.js';
+import { registerKingdomChatListeners } from './listeners/kingdom-chat-listener.js';
 
 Hooks.once('init', () => {
   console.log('Kingmaker Toolkit | Initializing');
@@ -37,4 +38,5 @@ Hooks.once('ready', () => {
 
   registerKingdomListeners();
   registerSettlementListeners();
+  registerKingdomChatListeners();
 });
