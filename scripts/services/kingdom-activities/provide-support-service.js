@@ -2,6 +2,8 @@ import { PROVIDE_SUPPORT_DATA } from '../../data/kingdom-activities/provide-supp
 import { KingdomService } from '../kingdom-service.js';
 import { ProvideSupportChatRenderer } from '../../renderers/kingdom/activities/provide-support-chat-renderer.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
+import { ActorService } from '../shared/actor-service.js';
+import { ProficiencyService } from '../shared/proficiency-service.js';
 
 export class ProvideSupportService {
   static async start() {
@@ -19,9 +21,13 @@ export class ProvideSupportService {
 
     const dc = kingdomDC + PROVIDE_SUPPORT_DATA.dcModifier;
 
-    const skillOptions = PROVIDE_SUPPORT_DATA.skills
-      .map((skill) => `<option value="${skill}">${this.formatSkillLabel(skill)}</option>`)
-      .join('');
+    const actor = ActorService.getActingActor();
+
+    if (!actor) {
+      return ui.notifications.error('Select a token or assign a character to your user.');
+    }
+
+    const skillOptions = this.getSkillOptions(actor);
 
     new Dialog({
       title: 'Provide Support',
@@ -39,7 +45,7 @@ export class ProvideSupportService {
           label: 'Roll',
           callback: async (html) => {
             const skill = html.find('#provide-support-skill').val();
-            await this.roll({ kingdom, skill, dc });
+            await this.roll({ kingdom, actor, skill, dc });
           },
         },
         cancel: {
@@ -50,9 +56,10 @@ export class ProvideSupportService {
     }).render(true);
   }
 
-  static async roll({ kingdom, skill, dc }) {
+  static async roll({ kingdom, actor, skill, dc }) {
     return KingdomCheckService.roll({
-      actor: kingdom,
+      actor,
+      skill,
       title: PROVIDE_SUPPORT_DATA.name,
       dc,
       options: ['kingdom-activity:provide-support'],
@@ -96,7 +103,18 @@ export class ProvideSupportService {
   }
 
   static getOutcomeText(degree) {
-    return PROVIDE_SUPPORT_DATA.outcomes[degree];
+    switch (degree) {
+      case 'criticalSuccess':
+        return 'You give a +2 circumstance bonus. If you are a master, +3 instead; if legendary, +4.';
+      case 'success':
+        return 'You give a +1 circumstance bonus.';
+      case 'failure':
+        return 'Gain 1 Unrest.';
+      case 'criticalFailure':
+        return 'Gain 2 Unrest.';
+      default:
+        return '';
+    }
   }
 
   static formatDegreeLabel(degree) {
@@ -113,5 +131,17 @@ export class ProvideSupportService {
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+  }
+
+  static getSkillOptions(actor) {
+    return ProficiencyService.getTrainedSkills(actor, PROVIDE_SUPPORT_DATA.skills)
+      .map((skill) => {
+        const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
+
+        return `<option value="${skill.slug}">
+        ${skill.label} (${ProficiencyService.rankToLabel(skill.rank)}, ${modifierLabel})
+      </option>`;
+      })
+      .join('');
   }
 }
