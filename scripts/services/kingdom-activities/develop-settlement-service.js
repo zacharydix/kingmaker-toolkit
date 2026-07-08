@@ -60,8 +60,8 @@ export class DevelopSettlementService {
     return SettlementService.getAllSettlements()
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((settlement) => {
-        const type = settlement.getType();
-        const development = settlement.getDevelopment();
+        const type = settlement.getFlag('world', 'settlementType') ?? 'Settlement';
+        const development = settlement.getFlag('world', 'development') ?? 0;
 
         return `<option value="${settlement.id}">
           ${settlement.name} (${type}, ${development} Development)
