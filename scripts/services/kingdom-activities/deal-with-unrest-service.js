@@ -1,6 +1,8 @@
 import { DEAL_WITH_UNREST_DATA } from '../../data/kingdom-activities/deal-with-unrest-data.js';
 import { KingdomService } from '../kingdom-service.js';
 import { DealWithUnrestChatRenderer } from '../../renderers/kingdom/activities/deal-with-unrest-chat-renderer.js';
+import { ActorService } from '../shared/actor-service.js';
+import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 
 export class DealWithUnrestService {
@@ -17,9 +19,13 @@ export class DealWithUnrestService {
       return ui.notifications.error('Could not determine Kingdom DC.');
     }
 
-    const skillOptions = DEAL_WITH_UNREST_DATA.skills
-      .map((skill) => `<option value="${skill}">${this.formatSkillLabel(skill)}</option>`)
-      .join('');
+    const actor = ActorService.getActingActor();
+
+    if (!actor) {
+      return ui.notifications.error('Select a token or assign a character to your user.');
+    }
+
+    const skillOptions = this.getSkillOptions(actor);
 
     new Dialog({
       title: DEAL_WITH_UNREST_DATA.name,
@@ -37,7 +43,7 @@ export class DealWithUnrestService {
           label: 'Roll',
           callback: async (html) => {
             const skill = html.find('#deal-with-unrest-skill').val();
-            await this.roll({ kingdom, skill, dc });
+            await this.roll({ kingdom, actor, skill, dc });
           },
         },
         cancel: {
@@ -48,9 +54,10 @@ export class DealWithUnrestService {
     }).render(true);
   }
 
-  static async roll({ kingdom, skill, dc }) {
+  static async roll({ kingdom, actor, skill, dc }) {
     return KingdomCheckService.roll({
-      actor: kingdom,
+      actor,
+      skill,
       title: DEAL_WITH_UNREST_DATA.name,
       dc,
       options: ['kingdom-activity:deal-with-unrest'],
@@ -131,5 +138,17 @@ export class DealWithUnrestService {
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+  }
+
+  static getSkillOptions(actor) {
+    return ProficiencyService.getTrainedSkills(actor, DEAL_WITH_UNREST_DATA.skills)
+      .map((skill) => {
+        const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
+
+        return `<option value="${skill.slug}">
+        ${skill.label} (${ProficiencyService.rankToLabel(skill.rank)}, ${modifierLabel})
+      </option>`;
+      })
+      .join('');
   }
 }
