@@ -29,5 +29,34 @@ export function registerKingdomChatListeners() {
           ui.notifications.info(`Kingdom unrest is now ${nextUnrest}.`);
         });
       });
+
+    html
+      .querySelectorAll('.kingmaker-chat-action[data-action="adjust-settlement-development"]')
+      .forEach((button) => {
+        button.addEventListener('click', async (event) => {
+          if (!game.user.isGM) {
+            return ui.notifications.warn('Only the GM can adjust settlement development.');
+          }
+
+          const button = event.currentTarget;
+          const settlement = game.actors.get(button.dataset.settlementId);
+          const delta = Number(button.dataset.developmentDelta);
+
+          if (!settlement) {
+            return ui.notifications.error('Settlement not found.');
+          }
+
+          const currentDevelopment = settlement.getFlag('world', 'development') ?? 0;
+          const nextDevelopment = Math.max(0, currentDevelopment + delta);
+
+          await settlement.setFlag('world', 'development', nextDevelopment);
+
+          button.disabled = true;
+          button.classList.add('km-button-success');
+          button.textContent = button.dataset.completedLabel;
+
+          ui.notifications.info(`${settlement.name} development is now ${nextDevelopment}.`);
+        });
+      });
   });
 }

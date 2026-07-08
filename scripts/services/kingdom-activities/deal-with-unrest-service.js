@@ -141,7 +141,7 @@ export class DealWithUnrestService {
   }
 
   static getSkillOptions(actor) {
-    ProficiencyService.getSkills(actor, DEAL_WITH_UNREST_DATA.skills)
+    return ProficiencyService.getSkills(actor, DEAL_WITH_UNREST_DATA.skills)
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 

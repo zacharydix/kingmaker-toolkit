@@ -9,6 +9,7 @@ import { ClaimHexesService } from '../services/kingdom-activities/claim-hexes-se
 import { BuildRoadsService } from '../services/kingdom-activities/build-roads-service.js';
 import { OutsourceReconnoiteringService } from '../services/kingdom-activities/outsource-reconnoitering-service.js';
 import { EstablishVillageService } from '../services/kingdom-activities/establish-village-service.js';
+import { DevelopSettlementService } from '../services/kingdom-activities/develop-settlement-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -626,6 +627,7 @@ export async function openKingdomDashboard() {
           'Build Roads': () => BuildRoadsService.start(),
           'Outsource Reconnoitering': () => OutsourceReconnoiteringService.start(),
           'Establish a Village': () => EstablishVillageService.start(),
+          'Develop a Settlement': () => DevelopSettlementService.start(),
         };
 
         const handler = activityHandlers[macroName];

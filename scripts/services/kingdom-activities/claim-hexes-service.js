@@ -47,7 +47,7 @@ export class ClaimHexesService {
   }
 
   static getSkillOptions(actor) {
-    ProficiencyService.getSkills(actor, CLAIM_HEXES_DATA.skills, {
+    return ProficiencyService.getSkills(actor, CLAIM_HEXES_DATA.skills, {
       trainedOnly: true,
     })
       .map((skill) => {

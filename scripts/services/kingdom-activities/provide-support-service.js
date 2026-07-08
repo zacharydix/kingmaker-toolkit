@@ -134,7 +134,7 @@ export class ProvideSupportService {
   }
 
   static getSkillOptions(actor) {
-    ProficiencyService.getSkills(actor, PROVIDE_SUPPORT_DATA.skills)
+    return ProficiencyService.getSkills(actor, PROVIDE_SUPPORT_DATA.skills)
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 

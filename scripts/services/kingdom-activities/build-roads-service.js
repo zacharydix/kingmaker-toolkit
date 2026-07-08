@@ -45,7 +45,7 @@ export class BuildRoadsService {
   }
 
   static getSkillOptions(actor) {
-    ProficiencyService.getSkills(actor, BUILD_ROADS_DATA.skills, {
+    return ProficiencyService.getSkills(actor, BUILD_ROADS_DATA.skills, {
       trainedOnly: true,
     })
       .map((skill) => {
