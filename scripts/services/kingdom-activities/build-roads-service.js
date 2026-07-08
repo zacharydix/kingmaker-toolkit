@@ -45,7 +45,9 @@ export class BuildRoadsService {
   }
 
   static getSkillOptions(actor) {
-    return ProficiencyService.getTrainedSkills(actor, BUILD_ROADS_DATA.skills)
+    ProficiencyService.getSkills(actor, BUILD_ROADS_DATA.skills, {
+      trainedOnly: true,
+    })
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 

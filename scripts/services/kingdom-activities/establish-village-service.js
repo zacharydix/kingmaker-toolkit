@@ -46,7 +46,7 @@ export class EstablishVillageService {
   }
 
   static getSkillOptions(actor) {
-    return ProficiencyService.getTrainedSkills(actor, ESTABLISH_VILLAGE_DATA.skills)
+    return ProficiencyService.getSkills(actor, ESTABLISH_VILLAGE_DATA.skills)
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 

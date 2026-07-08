@@ -47,7 +47,9 @@ export class ClaimHexesService {
   }
 
   static getSkillOptions(actor) {
-    return ProficiencyService.getTrainedSkills(actor, CLAIM_HEXES_DATA.skills)
+    ProficiencyService.getSkills(actor, CLAIM_HEXES_DATA.skills, {
+      trainedOnly: true,
+    })
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 

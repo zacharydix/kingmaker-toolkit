@@ -46,7 +46,7 @@ export class OutsourceReconnoiteringService {
   }
 
   static getSkillOptions(actor) {
-    return ProficiencyService.getTrainedSkills(actor, OUTSOURCE_RECONNOITERING_DATA.skills)
+    return ProficiencyService.getSkills(actor, OUTSOURCE_RECONNOITERING_DATA.skills)
       .map((skill) => {
         const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
 
