@@ -5,6 +5,7 @@ import { SettlementService } from '../services/settlement-service.js';
 import { KingdomEventService } from '../services/kingdom-event-service.js';
 import { ProvideSupportService } from '../services/kingdom-activities/provide-support-service.js';
 import { DealWithUnrestService } from '../services/kingdom-activities/deal-with-unrest-service.js';
+import { ClaimHexesService } from '../services/kingdom-activities/claim-hexes-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -618,6 +619,7 @@ export async function openKingdomDashboard() {
           'Kingdom Event': () => KingdomEventService.rollKingdomEvent(),
           'Provide Support': () => ProvideSupportService.start(),
           'Deal with Unrest': () => DealWithUnrestService.start(),
+          'Claim Hexes': () => ClaimHexesService.start(),
         };
 
         const handler = activityHandlers[macroName];
