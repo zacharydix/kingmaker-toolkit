@@ -4,6 +4,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { DevelopSettlementChatRenderer } from '../../renderers/kingdom/activities/develop-settlement-chat-renderer.js';
+import { SettlementService } from '../settlement-service.js';
 
 export class DevelopSettlementService {
   static async start() {
@@ -59,8 +60,8 @@ export class DevelopSettlementService {
     return SettlementService.getAllSettlements()
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((settlement) => {
-        const type = settlement.getFlag('world', 'settlementType') ?? 'Settlement';
-        const development = settlement.getFlag('world', 'development') ?? 0;
+        const type = settlement.getType();
+        const development = settlement.getDevelopment();
 
         return `<option value="${settlement.id}">
           ${settlement.name} (${type}, ${development} Development)
