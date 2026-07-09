@@ -12,6 +12,8 @@ import {
 } from '../renderers/downtime/earn-income-chat-renderer.js';
 import { renderDowntimeDashboard } from '../renderers/downtime/dashboard-renderer.js';
 
+const { ApplicationV2 } = foundry.applications.api;
+
 export async function openDowntimeDashboard() {
   // Paste the full current macros/downtime-dashboard.js body here.
 
@@ -340,27 +342,33 @@ export async function openDowntimeDashboard() {
    * Downtime Dashboard Application
    *******************************************************/
 
-  class DowntimeDashboard extends Application {
-    static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-        id: 'downtime-dashboard',
+  class DowntimeDashboard extends ApplicationV2 {
+    static DEFAULT_OPTIONS = {
+      id: 'downtime-dashboard',
+      tag: 'section',
+      classes: ['kingmaker-toolkit', 'downtime-dashboard'],
+      window: {
         title: 'Downtime Dashboard',
-        template: null,
-        width: 520,
-        height: 'auto',
         resizable: true,
-      });
-    }
+      },
+      position: {
+        width: 520,
+      },
+    };
 
     get actor() {
       return DowntimeSystem.getActor();
     }
 
-    async _renderInner() {
+    async _prepareContext(options) {
+      const context = await super._prepareContext(options);
       const actor = this.actor;
 
       if (!actor) {
-        return $(renderDowntimeDashboard({ actorName: null }));
+        return {
+          ...context,
+          actorName: null,
+        };
       }
 
       const skills = DowntimeSystem.getTrainedSkills(actor);
@@ -388,20 +396,29 @@ export async function openDowntimeDashboard() {
         ...settlements.map((s) => `<option value="${s.id}">${s.name}</option>`),
       ].join('');
 
-      return $(
-        renderDowntimeDashboard({
-          actorName: actor.name,
-          skillOptions,
-          settlementOptions,
-          defaultTaskLevel,
-          maxTaskLevel,
-          defaultDc: DowntimeSystem.TASK_DCS[defaultTaskLevel],
-        })
-      );
+      return {
+        ...context,
+        actorName: actor.name,
+        skillOptions,
+        settlementOptions,
+        defaultTaskLevel,
+        maxTaskLevel,
+        defaultDc: DowntimeSystem.TASK_DCS[defaultTaskLevel],
+      };
     }
 
-    activateListeners(html) {
-      super.activateListeners(html);
+    async _renderHTML(context, options) {
+      return renderDowntimeDashboard(context);
+    }
+
+    _replaceHTML(result, content, options) {
+      content.innerHTML = result;
+    }
+
+    async _onRender(context, options) {
+      await super._onRender(context, options);
+
+      const html = $(this.element);
 
       const form = html.find('.earn-income-form');
       const taskLevelInput = form.find("[name='taskLevel']");
@@ -581,5 +598,5 @@ export async function openDowntimeDashboard() {
    * Launcher
    *******************************************************/
 
-  new DowntimeDashboard().render(true);
+  new DowntimeDashboard().render({ force: true });
 }

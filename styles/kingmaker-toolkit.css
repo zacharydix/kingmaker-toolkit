@@ -93,6 +93,46 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* Application Styles                                                         */
+/* -------------------------------------------------------------------------- */
+
+.application.kingmaker-toolkit .window-content {
+  background: rgba(245, 239, 220, 0.94);
+  color: #191510;
+  padding: 18px;
+}
+
+.application.kingmaker-toolkit h1,
+.application.kingmaker-toolkit h2,
+.application.kingmaker-toolkit h3 {
+  color: #191510;
+  border-bottom: 1px solid #7a2e1f;
+}
+
+.application.kingmaker-toolkit label,
+.application.kingmaker-toolkit strong {
+  color: #191510;
+}
+
+.application.kingmaker-toolkit input,
+.application.kingmaker-toolkit select,
+.application.kingmaker-toolkit textarea {
+  background: rgba(255, 255, 255, 0.72);
+  color: #191510;
+  border: 1px solid #7a6a4f;
+}
+
+.application.kingmaker-toolkit button {
+  background: rgba(245, 239, 220, 0.9);
+  color: #191510;
+  border: 1px solid #7a6a4f;
+}
+
+.application.kingmaker-toolkit button:hover {
+  background: rgba(255, 250, 230, 0.95);
+}
+
+/* -------------------------------------------------------------------------- */
 /* Downtime Chat Cards                                                        */
 /* -------------------------------------------------------------------------- */
 
