@@ -14,6 +14,18 @@ The **Renderer Refactor** has been completed and merged.
 - Introduced shared CSS utility classes (e.g. `km-button-success`).
 - Updated architecture documentation to include Renderers, View Models, and CSS conventions.
 
+## Completed
+
+- Converted Downtime Dashboard, Kingdom Dashboard, and Settlement Dashboard from V1 Application/Dialog patterns to ApplicationV2.
+- Restored Kingmaker Toolkit dashboard styling for ApplicationV2 windows.
+- Remaining V1 warnings during PF2e rolls appear to come from PF2e’s internal CheckModifiersDialog, not from toolkit dashboards.
+
+## Possible Next Work
+
+- Convert individual kingdom activity prompts from Dialog to DialogV2.
+- Continue rules automation improvements.
+- Polish dashboard CSS/layout now that all dashboards share ApplicationV2 styling.
+
 The project architecture is now:
 
 ```
