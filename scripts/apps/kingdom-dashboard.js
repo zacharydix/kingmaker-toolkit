@@ -12,6 +12,7 @@ import { EstablishVillageService } from '../services/kingdom-activities/establis
 import { DevelopSettlementService } from '../services/kingdom-activities/develop-settlement-service.js';
 import { UpgradeSettlementService } from '../services/kingdom-activities/upgrade-settlement-service.js';
 import { RecruitArmyService } from '../services/kingdom-activities/recruit-army-service.js';
+import { TrainArmyService } from '../services/kingdom-activities/train-army-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -632,6 +633,7 @@ export async function openKingdomDashboard() {
           'Develop a Settlement': () => DevelopSettlementService.start(),
           'Upgrade a Settlement': () => UpgradeSettlementService.start(),
           'Recruit an Army': () => RecruitArmyService.start(),
+          'Train an Army': () => TrainArmyService.start(),
         };
 
         const handler = activityHandlers[macroName];
