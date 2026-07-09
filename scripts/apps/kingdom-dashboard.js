@@ -16,6 +16,8 @@ import { TrainArmyService } from '../services/kingdom-activities/train-army-serv
 import { OutfitArmyService } from '../services/kingdom-activities/outfit-army-service.js';
 import { RecoverArmyService } from '../services/kingdom-activities/recover-army-service.js';
 
+const { ApplicationV2 } = foundry.applications.api;
+
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
 
@@ -285,16 +287,19 @@ export async function openKingdomDashboard() {
   `,
   };
 
-  class KingdomDashboardApp extends Application {
-    static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-        id: 'kingdom-dashboard-app',
+  class KingdomDashboardApp extends ApplicationV2 {
+    static DEFAULT_OPTIONS = {
+      id: 'kingdom-dashboard-app',
+      tag: 'section',
+      classes: ['kingmaker-toolkit', 'kingdom-dashboard'],
+      window: {
         title: 'Kingdom Dashboard',
-        width: 460,
-        height: 'auto',
         resizable: true,
-      });
-    }
+      },
+      position: {
+        width: 460,
+      },
+    };
 
     get kingdom() {
       return KingdomService.getKingdomActor();
@@ -357,13 +362,22 @@ export async function openKingdomDashboard() {
       };
     }
 
-    async _renderInner(data) {
+    async _prepareContext(options) {
+      const context = await super._prepareContext(options);
+
+      return {
+        ...context,
+        ...this.getData(),
+      };
+    }
+
+    async _renderHTML(data, options) {
       if (data.missingKingdom) {
-        return $(`
-        <div style="padding:8px;">
+        return `
+          <div style="padding:8px;">
           <p><strong>No actor named "Kingdom" found.</strong></p>
-        </div>
-      `);
+          </div>
+        `;
       }
 
       const gmControls = data.isGM
@@ -394,7 +408,7 @@ export async function openKingdomDashboard() {
         </div>
       `;
 
-      return $(`
+      return `
       <form>
         <style>
           .kingdom-action-grid {
@@ -545,14 +559,20 @@ export async function openKingdomDashboard() {
 
         ${gmControls}
       </form>
-    `);
+    `;
     }
 
-    activateListeners(html) {
-      super.activateListeners(html);
+    _replaceHTML(result, content, options) {
+      content.innerHTML = result;
+    }
+
+    async _onRender(context, options) {
+      await super._onRender(context, options);
+
+      const html = $(this.window.content);
 
       html.find('.kingdom-refresh').on('click', () => {
-        this.render(false);
+        this.render({ force: true });
       });
 
       html.find('.kingdom-post-chat').on('click', async () => {
@@ -618,7 +638,7 @@ export async function openKingdomDashboard() {
         `,
         });
 
-        this.render(false);
+        this.render({ force: true });
       });
 
       html.find('.kingdom-app-run-macro').on('click', async (event) => {
@@ -658,9 +678,9 @@ export async function openKingdomDashboard() {
   }
 
   if (globalThis.kingdomDashboardApp?.rendered) {
-    globalThis.kingdomDashboardApp.bringToTop();
+    globalThis.kingdomDashboardApp.bringToFront();
   } else {
     globalThis.kingdomDashboardApp = new KingdomDashboardApp();
-    globalThis.kingdomDashboardApp.render(true);
+    globalThis.kingdomDashboardApp.render({ force: true });
   }
 }
