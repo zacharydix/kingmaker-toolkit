@@ -5,6 +5,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { UpgradeSettlementChatRenderer } from '../../renderers/kingdom/activities/upgrade-settlement-chat-renderer.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class UpgradeSettlementService {
   static async start() {
@@ -16,7 +17,10 @@ export class UpgradeSettlementService {
 
     const dc = KingdomService.getDC() + UPGRADE_SETTLEMENT_DATA.dcModifier;
     const settlementOptions = this.getSettlementOptions();
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(
+      actor,
+      UPGRADE_SETTLEMENT_DATA.skills
+    );
 
     if (!settlementOptions) return ui.notifications.error('No settlements are ready to upgrade.');
     if (!skillOptions)
@@ -74,18 +78,6 @@ export class UpgradeSettlementService {
       .join('');
   }
 
-  static getSkillOptions(actor) {
-    return ProficiencyService.getSkills(actor, UPGRADE_SETTLEMENT_DATA.skills)
-      .map((skill) => {
-        const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
-
-        return `<option value="${skill.slug}">
-          ${skill.label} (${ProficiencyService.rankToLabel(skill.rank)}, ${modifierLabel})
-        </option>`;
-      })
-      .join('');
-  }
-
   static async roll({ kingdom, actor, settlement, skill, dc }) {
     if (!settlement) return ui.notifications.error('Selected settlement could not be found.');
 
@@ -101,7 +93,9 @@ export class UpgradeSettlementService {
       dc,
       options: ['kingdom-activity:upgrade-settlement'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const shouldUpgrade = this.shouldUpgrade(degree);
         const unrestDelta = this.getUnrestDelta(degree);
 
@@ -111,12 +105,12 @@ export class UpgradeSettlementService {
           currentType,
           nextType,
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           shouldUpgrade,
           unrestDelta,
           outcomeText: this.getOutcomeText(degree, nextType),
@@ -155,28 +149,5 @@ export class UpgradeSettlementService {
       default:
         return '';
     }
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 }

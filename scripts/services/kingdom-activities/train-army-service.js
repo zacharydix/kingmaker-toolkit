@@ -4,6 +4,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { TrainArmyChatRenderer } from '../../renderers/kingdom/activities/train-army-chat-renderer.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class TrainArmyService {
   static async start() {
@@ -14,7 +15,7 @@ export class TrainArmyService {
     if (!actor) return ui.notifications.error('Select a token or assign a character to your user.');
 
     const dc = KingdomService.getDC() + TRAIN_ARMY_DATA.dcModifier;
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(actor, TRAIN_ARMY_DATA.skills);
 
     if (!skillOptions) return ui.notifications.error('No available skills for Train an Army.');
 
@@ -63,17 +64,19 @@ export class TrainArmyService {
       dc,
       options: ['kingdom-activity:train-army'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const unrestDelta = this.getUnrestDelta(degree);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           outcomeText: this.getOutcomeText(degree),
           unrestDelta,
         };
@@ -107,28 +110,5 @@ export class TrainArmyService {
       default:
         return '';
     }
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 }

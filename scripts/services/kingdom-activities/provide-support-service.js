@@ -70,17 +70,17 @@ export class ProvideSupportService {
       callback: async ({ roll, total }) => {
         const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
         const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
-
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const unrestDelta = this.getUnrestDelta(degree);
 
         const result = {
           skill,
-          skillLabel: KingdomActivityService.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: KingdomActivityService.formatDegreeLabel(degree),
+          degreeLabel,
           outcomeText: this.getOutcomeText(degree),
           unrestDelta,
         };

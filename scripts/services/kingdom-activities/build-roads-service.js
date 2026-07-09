@@ -4,6 +4,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { BuildRoadsChatRenderer } from '../../renderers/kingdom/activities/build-roads-chat-renderer.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class BuildRoadsService {
   static async start() {
@@ -14,7 +15,9 @@ export class BuildRoadsService {
     if (!actor) return ui.notifications.error('Select a token or assign a character to your user.');
 
     const dc = KingdomService.getDC() + BUILD_ROADS_DATA.dcModifier;
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(actor, BUILD_ROADS_DATA.skills, {
+      trainedOnly: false,
+    });
 
     if (!skillOptions)
       return ui.notifications.error('No trained skills available for Build Roads.');
@@ -66,18 +69,20 @@ export class BuildRoadsService {
       dc,
       options: ['kingdom-activity:build-roads'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const skillRank = actor.system.skills?.[skill]?.rank ?? 0;
         const roadHexes = this.getRoadHexesBuilt(degree, skillRank);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           roadHexes,
           outcomeText: this.getOutcomeText(degree, roadHexes),
         };
@@ -119,28 +124,5 @@ export class BuildRoadsService {
       default:
         return '';
     }
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 }

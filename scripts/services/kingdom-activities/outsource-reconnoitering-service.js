@@ -4,6 +4,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { OutsourceReconnoiteringChatRenderer } from '../../renderers/kingdom/activities/outsource-reconnoitering-chat-renderer.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class OutsourceReconnoiteringService {
   static async start() {
@@ -14,7 +15,12 @@ export class OutsourceReconnoiteringService {
     if (!actor) return ui.notifications.error('Select a token or assign a character to your user.');
 
     const dc = KingdomService.getDC() + OUTSOURCE_RECONNOITERING_DATA.dcModifier;
-    const skillOptions = this.getSkillOptions(actor);
+    // skill options
+    const skillOptions = KingdomActivityService.getSkillOptions(
+      actor,
+      OUTSOURCE_RECONNOITERING_DATA.skills,
+      { trainedOnly: false }
+    );
 
     if (!skillOptions) {
       return ui.notifications.error('No trained skills available for Outsource Reconnoitering.');
@@ -65,16 +71,18 @@ export class OutsourceReconnoiteringService {
       dc,
       options: ['kingdom-activity:outsource-reconnoitering'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           outcomeText: this.getOutcomeText(degree),
         };
 
@@ -101,28 +109,5 @@ export class OutsourceReconnoiteringService {
       default:
         return '';
     }
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 }
