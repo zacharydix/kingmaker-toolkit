@@ -111,16 +111,21 @@ export async function openDowntimeDashboard() {
     return Math.max(0, Number(actor?.level ?? actor?.system?.details?.level?.value ?? 0));
   };
 
-  DowntimeSystem.getDefaultTaskLevel = function (actor, settlement, skillSlug, skillData) {
-    const actorLevel = DowntimeSystem.getActorLevel(actor);
-    if (
+  DowntimeSystem.getMaxTaskLevel = function (settlement, skillSlug, skillData) {
+    const kingdomLevel = KingdomService.getLevel();
+
+    const hasMatchingEarnIncomeFocus =
       settlement &&
       skillSlug &&
-      DowntimeSystem.getMatchingFoci(settlement, skillSlug, skillData).length
-    ) {
-      return Math.clamp(actorLevel, 0, 20);
-    }
-    return Math.clamp(actorLevel - 2, 0, 20);
+      DowntimeSystem.getMatchingFoci(settlement, skillSlug, skillData).length > 0;
+
+    const maxTaskLevel = hasMatchingEarnIncomeFocus ? kingdomLevel : kingdomLevel - 3;
+
+    return Math.clamp(maxTaskLevel, 0, 20);
+  };
+
+  DowntimeSystem.getDefaultTaskLevel = function (_actor, settlement, skillSlug, skillData) {
+    return DowntimeSystem.getMaxTaskLevel(settlement, skillSlug, skillData);
   };
 
   DowntimeSystem.degreeOfSuccess = function (total, dc, die) {
@@ -369,6 +374,8 @@ export async function openDowntimeDashboard() {
         selectedSkill
       );
 
+      const maxTaskLevel = DowntimeSystem.getMaxTaskLevel(null, selectedSkill?.slug, selectedSkill);
+
       const skillOptions = skills
         .map(
           (s) =>
@@ -387,6 +394,7 @@ export async function openDowntimeDashboard() {
           skillOptions,
           settlementOptions,
           defaultTaskLevel,
+          maxTaskLevel,
           defaultDc: DowntimeSystem.TASK_DCS[defaultTaskLevel],
         })
       );
@@ -402,6 +410,27 @@ export async function openDowntimeDashboard() {
       const settlementSelect = form.find("[name='settlementId']");
       const focusPreview = html.find('.focus-preview');
       let userEditedTaskLevel = false;
+      const getCurrentTaskLevelMax = () => {
+        const skillSlug = skillSelect.val();
+        const skill = this.actor?.system.skills[skillSlug];
+        const settlementId = settlementSelect.val();
+        const settlement = settlementId ? game.actors.get(settlementId) : null;
+
+        return DowntimeSystem.getMaxTaskLevel(settlement, skillSlug, skill);
+      };
+
+      const syncTaskLevelDc = (level) => {
+        const maxTaskLevel = getCurrentTaskLevelMax();
+        const clampedLevel = Math.clamp(Number(level) || 0, 0, maxTaskLevel);
+
+        taskLevelInput.attr('max', maxTaskLevel);
+        taskLevelInput.val(clampedLevel);
+        dcInput.val(DowntimeSystem.TASK_DCS[clampedLevel]);
+
+        html.find('.downtime-task-level-help').html(`<em>Max: ${maxTaskLevel}</em>`);
+
+        return clampedLevel;
+      };
 
       const updateDefaultTaskLevel = () => {
         const actor = this.actor;
@@ -413,9 +442,15 @@ export async function openDowntimeDashboard() {
         const settlement = settlementId ? game.actors.get(settlementId) : null;
 
         const newLevel = DowntimeSystem.getDefaultTaskLevel(actor, settlement, skillSlug, skill);
+        const maxTaskLevel = DowntimeSystem.getMaxTaskLevel(settlement, skillSlug, skill);
+
+        taskLevelInput.attr('max', maxTaskLevel);
+        html.find('.downtime-task-level-help').html(`<em>Max: ${maxTaskLevel}</em>`);
+
         if (!userEditedTaskLevel) {
-          taskLevelInput.val(newLevel);
-          dcInput.val(DowntimeSystem.TASK_DCS[newLevel]);
+          syncTaskLevelDc(newLevel);
+        } else if (Number(taskLevelInput.val()) > maxTaskLevel) {
+          syncTaskLevelDc(maxTaskLevel);
         }
 
         return { settlement, skillSlug, skill };
@@ -449,9 +484,18 @@ export async function openDowntimeDashboard() {
       });
 
       taskLevelInput.on('change', () => {
-        const level = Math.clamp(Number(taskLevelInput.val()) || 0, 0, 20);
-        taskLevelInput.val(level);
-        dcInput.val(DowntimeSystem.TASK_DCS[level]);
+        syncTaskLevelDc(taskLevelInput.val());
+        updateFocusPreview();
+      });
+
+      html.find('.downtime-task-level-step').on('click', (event) => {
+        userEditedTaskLevel = true;
+
+        const step = Number(event.currentTarget.dataset.step) || 0;
+        const currentLevel = Number(taskLevelInput.val()) || 0;
+        const nextLevel = currentLevel + step;
+
+        syncTaskLevelDc(nextLevel);
         updateFocusPreview();
       });
 
@@ -476,21 +520,25 @@ export async function openDowntimeDashboard() {
           return;
         }
 
-        const taskLevel = Math.clamp(Number(formData.get('taskLevel')) || 0, 0, 20);
-        const dc = Number(formData.get('dc')) || DowntimeSystem.TASK_DCS[taskLevel];
-        const taskName = String(formData.get('taskName') ?? '').trim();
-
         const settlementId = formData.get('settlementId');
         const settlement = settlementId ? game.actors.get(settlementId) : null;
         const matchingFoci = DowntimeSystem.getMatchingFoci(settlement, skillSlug, skill);
         const focusBonus = matchingFoci.length ? 3 : 0;
 
-        const kingdomLevel = KingdomService.getLevel();
-        if (settlement && matchingFoci.length && taskLevel > kingdomLevel) {
+        const maxTaskLevel = DowntimeSystem.getMaxTaskLevel(settlement, skillSlug, skill);
+        const requestedTaskLevel = Number(formData.get('taskLevel')) || 0;
+
+        if (requestedTaskLevel > maxTaskLevel) {
           ui.notifications.warn(
-            `This Focus allows jobs up to kingdom level ${kingdomLevel}. Task level ${taskLevel} is above that.`
+            `Task level cannot exceed ${maxTaskLevel} for this settlement and skill.`
           );
+          syncTaskLevelDc(maxTaskLevel);
+          return;
         }
+
+        const taskLevel = Math.clamp(requestedTaskLevel, 0, maxTaskLevel);
+        const dc = Number(formData.get('dc')) || DowntimeSystem.TASK_DCS[taskLevel];
+        const taskName = String(formData.get('taskName') ?? '').trim();
 
         const rollOptions = {
           dc: { value: dc },

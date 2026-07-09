@@ -52,6 +52,46 @@
   margin-top: 8px;
 }
 
+.downtime-task-level-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 2;
+}
+
+.downtime-task-level-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.downtime-task-level-control input[name='taskLevel'] {
+  flex: 0 0 42px;
+  width: 42px;
+  min-width: 42px;
+  height: 26px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.downtime-task-level-step {
+  flex: 0 0 26px;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.downtime-task-level-help {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Downtime Chat Cards                                                        */
 /* -------------------------------------------------------------------------- */
