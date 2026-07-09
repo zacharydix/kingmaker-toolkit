@@ -6,9 +6,9 @@ This document tracks the planned migration from a collection of Foundry macros i
 
 Current target environment:
 
-* Foundry VTT 14.364
-* Pathfinder 2e V14-compatible release
-* PF2e Kingmaker 2.3.2
+- Foundry VTT 14.364
+- Pathfinder 2e V14-compatible release 8.3
+- PF2e Kingmaker 2.3.2
 
 ---
 
@@ -18,36 +18,36 @@ Current target environment:
 
 ### Environment Upgrade
 
-* Upgraded test environment to Foundry 14.364.
-* Upgraded PF2e system to V14-compatible release.
-* Upgraded Kingmaker module to 2.3.2.
+- Upgraded test environment to Foundry 14.364.
+- Upgraded PF2e system to V14-compatible release.
+- Upgraded Kingmaker module to 2.3.2.
 
 ### Validation Testing
 
 Verified working:
 
-* Character sheets
-* Actions and rolls
-* Journals
-* Kingdom actor flags
-* Settlement actor flags
-* Earn Income system
-* Currency manipulation
-* Dialog API
-* ChatMessage API
-* Application V1 API
-* Custom macro functionality
+- Character sheets
+- Actions and rolls
+- Journals
+- Kingdom actor flags
+- Settlement actor flags
+- Earn Income system
+- Currency manipulation
+- Dialog API
+- ChatMessage API
+- Application V1 API
+- Custom macro functionality
 
 ### Module Foundation
 
 Completed:
 
-* Repository renamed to `kingmaker-toolkit`
-* Root-level module structure established
-* `module.json` created at module root
-* `scripts/main.js` created
-* Module successfully loads in Foundry
-* Console initialization messages confirmed
+- Repository renamed to `kingmaker-toolkit`
+- Root-level module structure established
+- `module.json` created at module root
+- `scripts/main.js` created
+- Module successfully loads in Foundry
+- Console initialization messages confirmed
 
 ---
 
@@ -76,8 +76,8 @@ Modules/
 
 Goal:
 
-* Remove nested module implementation.
-* Retain only the new root module structure.
+- Remove nested module implementation.
+- Retain only the new root module structure.
 
 ### 3. Preserve Legacy Macro Code
 
@@ -142,27 +142,27 @@ Extract duplicated constants into reusable modules.
 
 #### Kingdom Data
 
-* Kingdom DC table
-* Level calculations
-* Kingdom constants
+- Kingdom DC table
+- Level calculations
+- Kingdom constants
 
 #### Settlement Data
 
-* Settlement tiers
-* Upgrade requirements
-* Settlement types
+- Settlement tiers
+- Upgrade requirements
+- Settlement types
 
 #### Earn Income Data
 
-* DC table
-* Reward table
-* Task level mappings
+- DC table
+- Reward table
+- Task level mappings
 
 #### Focus Data
 
-* Focus definitions
-* Focus descriptions
-* Earn Income mappings
+- Focus definitions
+- Focus descriptions
+- Earn Income mappings
 
 Target location:
 
@@ -189,9 +189,9 @@ scripts/services/
 
 Goals:
 
-* Eliminate duplicated utility code.
-* Create a single source of truth.
-* Improve testability.
+- Eliminate duplicated utility code.
+- Create a single source of truth.
+- Improve testability.
 
 ---
 
@@ -201,11 +201,11 @@ Extract duplicated HTML generation.
 
 ### Candidates
 
-* Dashboard headers
-* Result boxes
-* GM controls
-* Settlement displays
-* Focus displays
+- Dashboard headers
+- Result boxes
+- GM controls
+- Settlement displays
+- Focus displays
 
 Target:
 
@@ -229,9 +229,9 @@ Move dashboards into module-managed applications.
 
 ### Dashboards
 
-* Kingdom Dashboard
-* Settlement Dashboard
-* Downtime Dashboard
+- Kingdom Dashboard
+- Settlement Dashboard
+- Downtime Dashboard
 
 Current source:
 
@@ -259,8 +259,8 @@ game.kingmakerToolkit.openKingdomDashboard();
 
 Goal:
 
-* Keep user workflow unchanged.
-* Move implementation into module code.
+- Keep user workflow unchanged.
+- Move implementation into module code.
 
 ---
 
@@ -270,24 +270,24 @@ Move Kingdom activity logic into services.
 
 ### Kingdom Activities
 
-* Claim Hexes
-* Build Roads
-* Deal with Unrest
-* Provide Support
-* Outsource Reconnoitering
+- Claim Hexes
+- Build Roads
+- Deal with Unrest
+- Provide Support
+- Outsource Reconnoitering
 
 ### Settlement Activities
 
-* Establish Village
-* Develop Settlement
-* Upgrade Settlement
+- Establish Village
+- Develop Settlement
+- Upgrade Settlement
 
 ### Army Activities
 
-* Recruit Army
-* Train Army
-* Outfit Army
-* Recover Army
+- Recruit Army
+- Train Army
+- Outfit Army
+- Recover Army
 
 ---
 
@@ -302,7 +302,7 @@ Application V1 works but is deprecated.
 Future goal:
 
 ```js
-foundry.applications.api.ApplicationV2
+foundry.applications.api.ApplicationV2;
 ```
 
 Important:
@@ -319,11 +319,11 @@ Verify functionality from a non-GM perspective.
 
 ### Tests
 
-* Earn Income visibility
-* Private chat cards
-* GM-only controls
-* Dashboard permissions
-* Settlement interactions
+- Earn Income visibility
+- Private chat cards
+- GM-only controls
+- Dashboard permissions
+- Settlement interactions
 
 ---
 
@@ -331,9 +331,9 @@ Verify functionality from a non-GM perspective.
 
 Once all features exist inside the module:
 
-* Remove legacy macro implementations.
-* Remove duplicate utility code.
-* Eliminate obsolete references.
+- Remove legacy macro implementations.
+- Remove duplicate utility code.
+- Eliminate obsolete references.
 
 ---
 
@@ -360,11 +360,11 @@ kingmaker-toolkit/
 
 At that point:
 
-* GitHub becomes the sole source of truth.
-* Foundry macros become launchers only.
-* Shared logic exists exactly once.
-* ApplicationV2 can be adopted cleanly.
-* Future features can be added without duplication.
+- GitHub becomes the sole source of truth.
+- Foundry macros become launchers only.
+- Shared logic exists exactly once.
+- ApplicationV2 can be adopted cleanly.
+- Future features can be added without duplication.
 
 ---
 
@@ -372,20 +372,20 @@ At that point:
 
 Verified on:
 
-* Foundry VTT 14.364
-* PF2e V14-compatible release
-* PF2e Kingmaker 2.3.2
+- Foundry VTT 14.364
+- PF2e V14-compatible release
+- PF2e Kingmaker 2.3.2
 
 Confirmed working:
 
-* Kingdom actor flags
-* Settlement actor flags
-* Earn Income system
-* Currency updates
-* Dialog API
-* ChatMessage API
-* Application V1
-* Module loading
-* GitHub development workflow
+- Kingdom actor flags
+- Settlement actor flags
+- Earn Income system
+- Currency updates
+- Dialog API
+- ChatMessage API
+- Application V1
+- Module loading
+- GitHub development workflow
 
 This section should be updated after every major milestone.

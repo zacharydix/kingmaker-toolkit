@@ -4,6 +4,7 @@ import { DealWithUnrestChatRenderer } from '../../renderers/kingdom/activities/d
 import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class DealWithUnrestService {
   static async start() {
@@ -25,7 +26,13 @@ export class DealWithUnrestService {
       return ui.notifications.error('Select a token or assign a character to your user.');
     }
 
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(
+      actor,
+      DEAL_WITH_UNREST_DATA.skills,
+      {
+        trainedOnly: false,
+      }
+    );
 
     new Dialog({
       title: DEAL_WITH_UNREST_DATA.name,
@@ -62,17 +69,19 @@ export class DealWithUnrestService {
       dc,
       options: ['kingdom-activity:deal-with-unrest'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const unrestDelta = this.getUnrestDelta(degree);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           outcomeText: this.getOutcomeText(degree),
           unrestDelta,
         };
@@ -85,13 +94,6 @@ export class DealWithUnrestService {
         return result;
       },
     });
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
   }
 
   static getUnrestDelta(degree) {
@@ -122,33 +124,5 @@ export class DealWithUnrestService {
       default:
         return '';
     }
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
-
-  static getSkillOptions(actor) {
-    return ProficiencyService.getSkills(actor, DEAL_WITH_UNREST_DATA.skills)
-      .map((skill) => {
-        const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
-
-        return `<option value="${skill.slug}">
-        ${skill.label} (${ProficiencyService.rankToLabel(skill.rank)}, ${modifierLabel})
-      </option>`;
-      })
-      .join('');
   }
 }

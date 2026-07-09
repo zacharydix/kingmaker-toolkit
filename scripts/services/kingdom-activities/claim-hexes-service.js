@@ -4,6 +4,7 @@ import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { ClaimHexesChatRenderer } from '../../renderers/kingdom/activities/claim-hexes-chat-renderer.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class ClaimHexesService {
   static async start() {
@@ -15,7 +16,9 @@ export class ClaimHexesService {
 
     const dc = KingdomService.getDC() + CLAIM_HEXES_DATA.dcModifier;
 
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(actor, CLAIM_HEXES_DATA.skills, {
+      trainedOnly: false,
+    });
 
     if (!skillOptions) {
       return ui.notifications.error('No trained skills available for Claim Hexes.');
@@ -68,18 +71,20 @@ export class ClaimHexesService {
       dc,
       options: ['kingdom-activity:claim-hexes'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const skillRank = actor.system.skills?.[skill]?.rank ?? 0;
         const hexes = this.getHexesClaimed(degree, skillRank);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           hexes,
           outcomeText: this.getOutcomeText(degree, hexes),
         };

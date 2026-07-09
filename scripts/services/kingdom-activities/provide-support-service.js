@@ -4,6 +4,7 @@ import { ProvideSupportChatRenderer } from '../../renderers/kingdom/activities/p
 import { KingdomCheckService } from '../shared/kingdom-check-service.js';
 import { ActorService } from '../shared/actor-service.js';
 import { ProficiencyService } from '../shared/proficiency-service.js';
+import { KingdomActivityService } from '../shared/kingdom-activity-service.js';
 
 export class ProvideSupportService {
   static async start() {
@@ -27,7 +28,10 @@ export class ProvideSupportService {
       return ui.notifications.error('Select a token or assign a character to your user.');
     }
 
-    const skillOptions = this.getSkillOptions(actor);
+    const skillOptions = KingdomActivityService.getSkillOptions(
+      actor,
+      PROVIDE_SUPPORT_DATA.skills // allowed slugs
+    );
 
     new Dialog({
       title: 'Provide Support',
@@ -64,17 +68,19 @@ export class ProvideSupportService {
       dc,
       options: ['kingdom-activity:provide-support'],
       callback: async ({ roll, total }) => {
-        const degree = this.getDegreeOfSuccess(total, dc);
+        const degree = KingdomActivityService.degreeOfSuccess({ roll, dc });
+        const degreeLabel = KingdomActivityService.formatDegreeLabel(degree);
+        const skillLabel = KingdomActivityService.formatSkillLabel(skill);
         const unrestDelta = this.getUnrestDelta(degree);
 
         const result = {
           skill,
-          skillLabel: this.formatSkillLabel(skill),
+          skillLabel,
           roll,
           rollTotal: total,
           dc,
           degree,
-          degreeLabel: this.formatDegreeLabel(degree),
+          degreeLabel,
           outcomeText: this.getOutcomeText(degree),
           unrestDelta,
         };
@@ -87,13 +93,6 @@ export class ProvideSupportService {
         return result;
       },
     });
-  }
-
-  static getDegreeOfSuccess(total, dc) {
-    if (total >= dc + 10) return 'criticalSuccess';
-    if (total >= dc) return 'success';
-    if (total <= dc - 10) return 'criticalFailure';
-    return 'failure';
   }
 
   static getUnrestDelta(degree) {
@@ -115,33 +114,5 @@ export class ProvideSupportService {
       default:
         return '';
     }
-  }
-
-  static formatDegreeLabel(degree) {
-    return {
-      criticalSuccess: 'Critical Success',
-      success: 'Success',
-      failure: 'Failure',
-      criticalFailure: 'Critical Failure',
-    }[degree];
-  }
-
-  static formatSkillLabel(skill) {
-    return skill
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
-
-  static getSkillOptions(actor) {
-    return ProficiencyService.getSkills(actor, PROVIDE_SUPPORT_DATA.skills)
-      .map((skill) => {
-        const modifierLabel = skill.value >= 0 ? `+${skill.value}` : `${skill.value}`;
-
-        return `<option value="${skill.slug}">
-        ${skill.label} (${ProficiencyService.rankToLabel(skill.rank)}, ${modifierLabel})
-      </option>`;
-      })
-      .join('');
   }
 }
