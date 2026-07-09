@@ -11,6 +11,7 @@ import { OutsourceReconnoiteringService } from '../services/kingdom-activities/o
 import { EstablishVillageService } from '../services/kingdom-activities/establish-village-service.js';
 import { DevelopSettlementService } from '../services/kingdom-activities/develop-settlement-service.js';
 import { UpgradeSettlementService } from '../services/kingdom-activities/upgrade-settlement-service.js';
+import { RecruitArmyService } from '../services/kingdom-activities/recruit-army-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -630,6 +631,7 @@ export async function openKingdomDashboard() {
           'Establish a Village': () => EstablishVillageService.start(),
           'Develop a Settlement': () => DevelopSettlementService.start(),
           'Upgrade a Settlement': () => UpgradeSettlementService.start(),
+          'Recruit an Army': () => RecruitArmyService.start(),
         };
 
         const handler = activityHandlers[macroName];
