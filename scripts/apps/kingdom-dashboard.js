@@ -14,6 +14,7 @@ import { UpgradeSettlementService } from '../services/kingdom-activities/upgrade
 import { RecruitArmyService } from '../services/kingdom-activities/recruit-army-service.js';
 import { TrainArmyService } from '../services/kingdom-activities/train-army-service.js';
 import { OutfitArmyService } from '../services/kingdom-activities/outfit-army-service.js';
+import { RecoverArmyService } from '../services/kingdom-activities/recover-army-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -636,6 +637,7 @@ export async function openKingdomDashboard() {
           'Recruit an Army': () => RecruitArmyService.start(),
           'Train an Army': () => TrainArmyService.start(),
           'Outfit Army': () => OutfitArmyService.start(),
+          'Recover Army': () => RecoverArmyService.start(),
         };
 
         const handler = activityHandlers[macroName];
