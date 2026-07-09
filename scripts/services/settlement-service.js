@@ -56,4 +56,41 @@ export class SettlementService {
   static getConfig() {
     return SETTLEMENT_CONFIG;
   }
+
+  static getSettlementById(id) {
+    const actor = game.actors.get(id);
+    return this.isSettlement(actor) ? actor : null;
+  }
+
+  static async updateSettlementArt(actor, settlementType) {
+    const config = this.getConfig()[settlementType];
+
+    if (!config) {
+      throw new Error(`No settlement art configured for ${settlementType}.`);
+    }
+
+    await actor.update({
+      img: config.img,
+      'prototypeToken.texture.src': config.img,
+    });
+
+    for (const token of actor.getActiveTokens()) {
+      await token.document.update({
+        'texture.src': config.img,
+      });
+    }
+  }
+
+  static async upgradeSettlement(actor, nextType) {
+    const config = this.getConfig()[nextType];
+
+    if (!config) {
+      throw new Error(`No settlement art configured for ${nextType}.`);
+    }
+
+    await actor.setFlag('world', 'settlementType', nextType);
+    await actor.setFlag('world', 'development', 0);
+
+    await this.updateSettlementArt(actor, nextType);
+  }
 }

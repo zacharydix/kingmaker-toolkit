@@ -3,6 +3,18 @@
 import { KingdomService } from '../services/kingdom-service.js';
 import { SettlementService } from '../services/settlement-service.js';
 import { KingdomEventService } from '../services/kingdom-event-service.js';
+import { ProvideSupportService } from '../services/kingdom-activities/provide-support-service.js';
+import { DealWithUnrestService } from '../services/kingdom-activities/deal-with-unrest-service.js';
+import { ClaimHexesService } from '../services/kingdom-activities/claim-hexes-service.js';
+import { BuildRoadsService } from '../services/kingdom-activities/build-roads-service.js';
+import { OutsourceReconnoiteringService } from '../services/kingdom-activities/outsource-reconnoitering-service.js';
+import { EstablishVillageService } from '../services/kingdom-activities/establish-village-service.js';
+import { DevelopSettlementService } from '../services/kingdom-activities/develop-settlement-service.js';
+import { UpgradeSettlementService } from '../services/kingdom-activities/upgrade-settlement-service.js';
+import { RecruitArmyService } from '../services/kingdom-activities/recruit-army-service.js';
+import { TrainArmyService } from '../services/kingdom-activities/train-army-service.js';
+import { OutfitArmyService } from '../services/kingdom-activities/outfit-army-service.js';
+import { RecoverArmyService } from '../services/kingdom-activities/recover-army-service.js';
 
 export async function openKingdomDashboard() {
   // paste current KingdomDashboard.js body here
@@ -612,8 +624,26 @@ export async function openKingdomDashboard() {
       html.find('.kingdom-app-run-macro').on('click', async (event) => {
         const macroName = event.currentTarget.dataset.macroName;
 
-        if (macroName === 'Kingdom Event') {
-          return KingdomEventService.rollKingdomEvent();
+        const activityHandlers = {
+          'Kingdom Event': () => KingdomEventService.rollKingdomEvent(),
+          'Provide Support': () => ProvideSupportService.start(),
+          'Deal with Unrest': () => DealWithUnrestService.start(),
+          'Claim Hexes': () => ClaimHexesService.start(),
+          'Build Roads': () => BuildRoadsService.start(),
+          'Outsource Reconnoitering': () => OutsourceReconnoiteringService.start(),
+          'Establish a Village': () => EstablishVillageService.start(),
+          'Develop a Settlement': () => DevelopSettlementService.start(),
+          'Upgrade a Settlement': () => UpgradeSettlementService.start(),
+          'Recruit an Army': () => RecruitArmyService.start(),
+          'Train an Army': () => TrainArmyService.start(),
+          'Outfit Army': () => OutfitArmyService.start(),
+          'Recover Army': () => RecoverArmyService.start(),
+        };
+
+        const handler = activityHandlers[macroName];
+
+        if (handler) {
+          return handler();
         }
 
         const macro = game.macros.getName(macroName);

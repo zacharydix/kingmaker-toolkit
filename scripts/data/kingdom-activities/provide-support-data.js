@@ -1,0 +1,22 @@
+export const PROVIDE_SUPPORT_DATA = {
+  name: 'Provide Support',
+  dcModifier: -10,
+  skills: [
+    'acrobatics',
+    'arcana',
+    'athletics',
+    'crafting',
+    'deception',
+    'diplomacy',
+    'intimidation',
+    'medicine',
+    'nature',
+    'occultism',
+    'performance',
+    'religion',
+    'society',
+    'stealth',
+    'survival',
+    'thievery',
+  ],
+};
