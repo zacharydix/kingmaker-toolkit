@@ -1,4 +1,5 @@
 import { KingdomService } from '../services/kingdom-service.js';
+import { SettlementService } from '../services/settlement-service.js';
 
 export function registerKingdomChatListeners() {
   Hooks.on('renderChatMessageHTML', (_message, html) => {
@@ -56,6 +57,31 @@ export function registerKingdomChatListeners() {
           button.textContent = button.dataset.completedLabel;
 
           ui.notifications.info(`${settlement.name} development is now ${nextDevelopment}.`);
+        });
+      });
+
+    html
+      .querySelectorAll('.kingmaker-chat-action[data-action="upgrade-settlement"]')
+      .forEach((button) => {
+        button.addEventListener('click', async (event) => {
+          if (!game.user.isGM) {
+            return ui.notifications.warn('Only the GM can upgrade settlements.');
+          }
+
+          const button = event.currentTarget;
+          const settlement = SettlementService.getSettlementById(button.dataset.settlementId);
+          const nextType = button.dataset.nextType;
+
+          if (!settlement) return ui.notifications.error('Settlement not found.');
+          if (!nextType) return ui.notifications.error('Next settlement type missing.');
+
+          await SettlementService.upgradeSettlement(settlement, nextType);
+
+          button.disabled = true;
+          button.classList.add('km-button-success');
+          button.textContent = button.dataset.completedLabel;
+
+          ui.notifications.info(`${settlement.name} upgraded to ${nextType}.`);
         });
       });
   });

@@ -233,6 +233,10 @@ export async function openSettlementDashboard() {
         await actor.setFlag('world', 'development', newDevelopment);
         await actor.setFlag('world', 'foci', selectedFoci);
 
+        if (newType !== settlementType) {
+          await SettlementService.updateSettlementArt(actor, newType);
+        }
+
         if (oldDevelopmentPoints !== undefined) {
           await actor.unsetFlag('world', 'developmentPoints');
         }
@@ -291,19 +295,7 @@ export async function openSettlementDashboard() {
             return ui.notifications.error(`No settlement art configured for ${nextType}.`);
           }
 
-          await actor.setFlag('world', 'settlementType', nextType);
-          await actor.setFlag('world', 'development', 0);
-
-          await actor.update({
-            img: config.img,
-            'prototypeToken.texture.src': config.img,
-          });
-
-          for (const token of actor.getActiveTokens()) {
-            await token.document.update({
-              'texture.src': config.img,
-            });
-          }
+          await SettlementService.upgradeSettlement(actor, nextType);
 
           await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor }),
